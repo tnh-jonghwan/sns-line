@@ -15,11 +15,10 @@ func main() {
 		fx.Provide(
 			config.GetEnv,
 			jwt.GetAccessToken,
-
-			webhook.NewWebhookHandler,
 		),
 
-		// Domain handler
+		// Domain modules
+		webhook.WebhookModule,
 		domain.HandlerModule,
 
 		// App initialization
