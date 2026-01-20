@@ -23,7 +23,7 @@ type TokenResponse struct {
 }
 
 // GenerateJWT creates a signed JWT token with the given private key and kid
-func GenerateJWT(privateKey *rsa.PrivateKey) (string, error) {
+func signJWT(privateKey *rsa.PrivateKey) (string, error) {
 	env := config.GetEnv()
 
 	// Create claims using MapClaims (aud가 문자열로 들어감)
@@ -45,7 +45,7 @@ func GenerateJWT(privateKey *rsa.PrivateKey) (string, error) {
 	return token.SignedString(privateKey)
 }
 
-func GetJWT() string {
+func getJWT() string {
 	// JWK private key (JWK 형식 문자열)
 	privateKeyJWK := `
 	{
@@ -81,7 +81,7 @@ func GetJWT() string {
 	}
 
 	// Generate JWT
-	signedToken, err := GenerateJWT(rsaPrivateKey)
+	signedToken, err := signJWT(rsaPrivateKey)
 	if err != nil {
 		log.Fatalf("Failed to generate JWT: %v", err)
 	}
@@ -89,9 +89,9 @@ func GetJWT() string {
 	return signedToken
 }
 
-func GenerateAccessToken() string {
+func GetAccessToken() string {
 	env := config.GetEnv()
-	jwtToken := GetJWT()
+	jwtToken := getJWT()
 
 	// POST https://api.line.me/oauth2/v2.1/token 호출해서 accessToken 발급
 	url := fmt.Sprintf("%s/oauth2/v2.1/token", env.LineApiPrefix)
