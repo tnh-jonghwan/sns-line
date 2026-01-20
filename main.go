@@ -12,12 +12,15 @@ import (
 
 func main() {
 	fx.New(
-		fx.Provide(config.GetEnv),
-		fx.Provide(jwt.GetAccessToken),
+		fx.Provide(
+			config.GetEnv,
+			jwt.GetAccessToken,
 
-		// Domain modules
-		webhook.Module,       // WebhookHandler 제공
-		domain.HandlerModule, // []Handler 제공
+			webhook.NewWebhookHandler,
+		),
+
+		// Domain handler
+		domain.HandlerModule,
 
 		// App initialization
 		fx.Invoke(app.NewApp),
