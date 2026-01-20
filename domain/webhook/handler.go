@@ -20,7 +20,7 @@ func NewWebhookHandler(service *WebhookService) *WebhookHandler {
 
 // Handle - Webhook HTTP 요청 처리
 func (h *WebhookHandler) Handle(c *fiber.Ctx) error {
-	// Request Body 파싱
+	// 공통: Request Body 파싱
 	var req WebhookRequest
 	if err := c.BodyParser(&req); err != nil {
 		log.Printf("Error parsing request: %v", err)
@@ -39,4 +39,9 @@ func (h *WebhookHandler) Handle(c *fiber.Ctx) error {
 
 	// LINE은 반드시 200 OK를 받아야 함
 	return c.SendStatus(fiber.StatusOK)
+}
+
+// RegisterRoutes - Handler interface 구현
+func (h *WebhookHandler) RegisterRoutes(baseRouter fiber.Router) {
+	baseRouter.Post("/webhook", h.Handle)
 }
