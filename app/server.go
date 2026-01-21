@@ -40,6 +40,11 @@ func NewFiberApp(lc fx.Lifecycle) *fiber.App {
 }
 
 func buildGlobalRoutes(app *fiber.App) {
+	// test
+	app.Get("/", func(c *fiber.Ctx) error {
+		return c.SendString("Hello, SNS-LINE SERVER!")
+	})
+
 	// refresh
 	app.Get("/refresh-token", func(c *fiber.Ctx) error {
 		newToken := jwt.GetAccessToken()
