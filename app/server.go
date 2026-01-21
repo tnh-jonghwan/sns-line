@@ -4,30 +4,22 @@ import (
 	"context"
 	"log"
 
-	"messaging-line/domain"
 	"messaging-line/jwt"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/fx"
 )
 
-// NewApp - Fiber 앱 생성 및 라우팅 설정
-func NewApp(lc fx.Lifecycle, handlers []domain.Handler) {
+// NewFiberApp - Fiber 앱 생성, 전역 라우트 등록, 서버 시작
+func NewFiberApp(lc fx.Lifecycle) *fiber.App {
 	app := fiber.New(fiber.Config{
 		DisableStartupMessage: false,
 	})
 
-	// Base router 생성
-	baseRouter := app.Group("/")
-
 	// 전역 라우트 등록
-	baseRouter.Get("/refresh-token", refreshTokenHandler)
+	buildGlobalRoutes(app)
 
-	// 각 domain handler의 라우트 등록
-	for _, h := range handlers {
-		h.RegisterRoutes(baseRouter)
-	}
-
+	// 서버 라이프사이클 관리
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
 			go func() {
@@ -43,13 +35,17 @@ func NewApp(lc fx.Lifecycle, handlers []domain.Handler) {
 			return app.Shutdown()
 		},
 	})
+
+	return app
 }
 
-// refreshTokenHandler - Access Token 갱신 핸들러
-func refreshTokenHandler(c *fiber.Ctx) error {
-	newToken := jwt.GetAccessToken()
-	return c.JSON(fiber.Map{
-		"message":      "Token refreshed",
-		"access_token": newToken,
+func buildGlobalRoutes(app *fiber.App) {
+	// refresh
+	app.Get("/refresh-token", func(c *fiber.Ctx) error {
+		newToken := jwt.GetAccessToken()
+		return c.JSON(fiber.Map{
+			"message":      "Token refreshed",
+			"access_token": newToken,
+		})
 	})
 }

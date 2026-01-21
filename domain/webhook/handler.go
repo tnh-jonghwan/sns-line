@@ -6,19 +6,16 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// WebhookHandler - HTTP 요청/응답 처리
 type WebhookHandler struct {
 	service *WebhookService
 }
 
-// NewWebhookHandler - WebhookHandler 생성자
 func NewWebhookHandler(service *WebhookService) *WebhookHandler {
 	return &WebhookHandler{
 		service: service,
 	}
 }
 
-// Handle - Webhook HTTP 요청 처리
 func (h *WebhookHandler) Handle(c *fiber.Ctx) error {
 	// 공통: Request Body 파싱
 	var req WebhookRequest
@@ -39,9 +36,4 @@ func (h *WebhookHandler) Handle(c *fiber.Ctx) error {
 
 	// LINE은 반드시 200 OK를 받아야 함
 	return c.SendStatus(fiber.StatusOK)
-}
-
-// RegisterRoutes - Handler interface 구현
-func (h *WebhookHandler) RegisterRoutes(baseRouter fiber.Router) {
-	baseRouter.Post("/webhook", h.Handle)
 }

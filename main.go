@@ -3,7 +3,6 @@ package main
 import (
 	"messaging-line/app"
 	"messaging-line/config"
-	"messaging-line/domain"
 	"messaging-line/domain/webhook"
 	"messaging-line/jwt"
 
@@ -13,15 +12,11 @@ import (
 func main() {
 	fx.New(
 		fx.Provide(
+			app.NewFiberApp,
 			config.GetEnv,
 			jwt.GetAccessToken,
 		),
 
-		// Domain modules
 		webhook.WebhookModule,
-		domain.HandlerModule,
-
-		// App initialization
-		fx.Invoke(app.NewApp),
 	).Run()
 }

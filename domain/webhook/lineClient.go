@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"messaging-line/config"
 	"net/http"
 )
 
@@ -16,31 +17,47 @@ type LineClient struct {
 }
 
 // NewLineClient - LineClient 생성자
-func NewLineClient(accessToken, apiURL string) *LineClient {
+func NewLineClient(accessToken string, env *config.Env) *LineClient {
 	return &LineClient{
 		accessToken: accessToken,
-		apiURL:      apiURL,
+		apiURL:      env.LineApiPrefix,
 	}
 }
 
-// ReplyMessage - LINE 메시지 답장 API 호출
+// ReplyMessage - LINE 메시지 답장 API 호출 (단일 메시지)
 func (c *LineClient) ReplyMessage(replyToken, text string) error {
+	return c.ReplyMessages(replyToken, []string{text})
+}
+
+// ReplyMessages - LINE 메시지 답장 API 호출 (복수 메시지, 최대 5개)
+func (c *LineClient) ReplyMessages(replyToken string, texts []string) error {
 	url := fmt.Sprintf("%s/v2/bot/message/reply", c.apiURL)
+
+	// 최대 5개 메시지만 허용
+	if len(texts) > 5 {
+		return fmt.Errorf("LINE API allows maximum 5 messages per reply, got %d", len(texts))
+	}
+
+	// 메시지 배열 생성
+	messages := make([]ReplyMessage, len(texts))
+	for i, text := range texts {
+		messages[i] = ReplyMessage{
+			Type: "text",
+			Text: text,
+		}
+	}
 
 	replyData := ReplyRequest{
 		ReplyToken: replyToken,
-		Messages: []ReplyMessage{
-			{
-				Type: "text",
-				Text: text,
-			},
-		},
+		Messages:   messages,
 	}
 
 	jsonData, err := json.Marshal(replyData)
 	if err != nil {
 		return fmt.Errorf("failed to marshal reply data: %w", err)
 	}
+
+	log.Printf("Sending reply to LINE API: %s", string(jsonData))
 
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
 	if err != nil {
@@ -57,9 +74,10 @@ func (c *LineClient) ReplyMessage(replyToken, text string) error {
 	}
 	defer resp.Body.Close()
 
+	body, _ := io.ReadAll(resp.Body)
+
 	if resp.StatusCode != 200 {
-		body, _ := io.ReadAll(resp.Body)
-		log.Printf("Reply API error: %s", string(body))
+		log.Printf("Reply API error (status %d): %s", resp.StatusCode, string(body))
 		return fmt.Errorf("reply failed with status %d: %s", resp.StatusCode, string(body))
 	}
 
