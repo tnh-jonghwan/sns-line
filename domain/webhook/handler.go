@@ -2,17 +2,20 @@ package webhook
 
 import (
 	"log"
+	"sns-line/domain/sse"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 type WebhookHandler struct {
-	service *WebhookService
+	service     *WebhookService
+	broadcaster *sse.Broadcaster
 }
 
-func NewWebhookHandler(service *WebhookService) *WebhookHandler {
+func NewWebhookHandler(service *WebhookService, broadcaster *sse.Broadcaster) *WebhookHandler {
 	return &WebhookHandler{
-		service: service,
+		service:     service,
+		broadcaster: broadcaster,
 	}
 }
 
@@ -30,7 +33,7 @@ func (h *WebhookHandler) Handle(c *fiber.Ctx) error {
 	}
 
 	// Service layer에서 이벤트 처리
-	if err := h.service.HandleEvents(req.Events); err != nil {
+	if err := h.service.HandleEvents(req.Events, h.broadcaster); err != nil {
 		log.Printf("Error handling events: %v", err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Failed to process events",

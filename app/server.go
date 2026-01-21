@@ -38,10 +38,11 @@ func NewFiberApp(lc fx.Lifecycle) *fiber.App {
 }
 
 func buildGlobalRoutes(app *fiber.App) {
-	// test
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello, SNS-LINE SERVER!")
-	})
+	// Static files
+	app.Static("/", "./static")
 
-	// health check나 다른 전역 라우트를 여기에 추가
+	// health check
+	app.Get("/health", func(c *fiber.Ctx) error {
+		return c.SendString("OK")
+	})
 }
