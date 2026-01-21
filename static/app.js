@@ -1,4 +1,4 @@
-// SSE 연결
+// eventHub 연결
 let eventSource = null;
 const messages = document.getElementById('messages');
 const messageInput = document.getElementById('messageInput');
@@ -6,12 +6,12 @@ const sendButton = document.getElementById('sendButton');
 const statusDot = document.getElementById('statusDot');
 const statusText = document.getElementById('statusText');
 
-// SSE 연결
+// eventHub 연결
 function connect() {
     eventSource = new EventSource('/events');
     
     eventSource.onopen = () => {
-        console.log('SSE 연결됨');
+        console.log('eventHub 연결됨');
         statusDot.classList.add('connected');
         statusText.textContent = '연결됨';
         sendButton.disabled = false;
@@ -23,7 +23,7 @@ function connect() {
     };
     
     eventSource.onerror = (error) => {
-        console.error('SSE 에러:', error);
+        console.error('eventHub 에러:', error);
         statusDot.classList.remove('connected');
         statusText.textContent = '연결 끊김';
         sendButton.disabled = true;

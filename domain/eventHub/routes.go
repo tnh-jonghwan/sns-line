@@ -1,20 +1,16 @@
-package sse
+package eventHub
 
 import (
 	"bufio"
 	"fmt"
 	"log"
+	"sns-line/domain/line"
 
 	"github.com/gofiber/fiber/v2"
 )
 
-// LineBroadcaster LINE 브로드캐스트 인터페이스
-type LineBroadcaster interface {
-	BroadcastMessage(text string) error
-}
-
-func RegisterSSERoutes(app *fiber.App, broadcaster *Broadcaster, lineClient LineBroadcaster) {
-	// SSE 엔드포인트
+func RegistereventHubRoutes(app *fiber.App, eventHub *EventHub, lineClient *line.LineClient) {
+	// eventHub 엔드포인트
 	app.Get("/events", func(c *fiber.Ctx) error {
 		c.Set("Content-Type", "text/event-stream")
 		c.Set("Cache-Control", "no-cache")
@@ -23,14 +19,14 @@ func RegisterSSERoutes(app *fiber.App, broadcaster *Broadcaster, lineClient Line
 
 		// 새 클라이언트 채널 생성
 		client := make(chan Message, 10)
-		broadcaster.Register(client)
+		eventHub.Register(client)
 
-		log.Println("SSE 클라이언트 연결됨")
+		log.Println("eventHub 클라이언트 연결됨")
 
 		c.Context().SetBodyStreamWriter(func(w *bufio.Writer) {
 			defer func() {
-				broadcaster.Unregister(client)
-				log.Println("SSE 클라이언트 연결 해제됨")
+				eventHub.Unregister(client)
+				log.Println("eventHub 클라이언트 연결 해제됨")
 			}()
 
 			// 초기 연결 메시지
@@ -41,7 +37,7 @@ func RegisterSSERoutes(app *fiber.App, broadcaster *Broadcaster, lineClient Line
 			for message := range client {
 				fmt.Fprintf(w, "data: %s\n\n", message.ToJSON())
 				if err := w.Flush(); err != nil {
-					log.Printf("SSE flush error: %v", err)
+					log.Printf("eventHub flush error: %v", err)
 					return
 				}
 			}

@@ -106,8 +106,8 @@ func GetAccessToken() string {
 
 	// URL-encoded form data 생성 (url.Values로 자동 인코딩)
 	values := url.Values{}
-	values.Set("client_assertion", jwtToken)
-	values.Set("client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer")
+	values.Set("client_aeventHubrtion", jwtToken)
+	values.Set("client_aeventHubrtion_type", "urn:ietf:params:oauth:client-aeventHubrtion-type:jwt-bearer")
 	values.Set("grant_type", "client_credentials")
 
 	data := values.Encode()

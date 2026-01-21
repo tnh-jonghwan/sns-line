@@ -5,7 +5,8 @@ import (
 	"os"
 	"sns-line/app"
 	"sns-line/config"
-	"sns-line/domain/sse"
+	"sns-line/domain/eventHub"
+	"sns-line/domain/line"
 	"sns-line/domain/webhook"
 
 	"go.uber.org/fx"
@@ -21,7 +22,8 @@ func main() {
 			config.GetEnv,
 		),
 
-		sse.SseModule,
+		line.LineModule,
+		eventHub.EventHubModule,
 		webhook.WebhookModule,
 	).Run()
 }

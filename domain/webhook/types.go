@@ -27,15 +27,3 @@ type Message struct {
 	Type string `json:"type"`
 	Text string `json:"text,omitempty"`
 }
-
-// ReplyRequest - LINE Reply API 요청 구조체
-type ReplyRequest struct {
-	ReplyToken string         `json:"replyToken"`
-	Messages   []ReplyMessage `json:"messages"`
-}
-
-// ReplyMessage - 답장 메시지 구조체
-type ReplyMessage struct {
-	Type string `json:"type"`
-	Text string `json:"text"`
-}
