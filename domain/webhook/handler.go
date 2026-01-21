@@ -1,7 +1,6 @@
 package webhook
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
@@ -21,7 +20,7 @@ func (h *WebhookHandler) Handle(c *fiber.Ctx) error {
 	// 공통: Request Body 파싱
 	var req WebhookRequest
 
-	fmt.Println("webhook handle 호출")
+	log.Println("webhook handle 호출")
 
 	if err := c.BodyParser(&req); err != nil {
 		log.Printf("Error parsing request: %v", err)

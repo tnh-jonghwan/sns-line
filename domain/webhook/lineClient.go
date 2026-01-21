@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"messaging-line/config"
 	"net/http"
+	"sns-line/config"
 )
 
 // LineClient - LINE API와 통신하는 클라이언트
@@ -81,6 +81,6 @@ func (c *LineClient) ReplyMessages(replyToken string, texts []string) error {
 		return fmt.Errorf("reply failed with status %d: %s", resp.StatusCode, string(body))
 	}
 
-	log.Printf("Reply sent successfully")
+	log.Println("Reply sent successfully")
 	return nil
 }

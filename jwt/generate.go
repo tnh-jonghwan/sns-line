@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"messaging-line/config"
 	"net/http"
+	"sns-line/config"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -117,6 +117,8 @@ func GetAccessToken() string {
 
 	var tokenResponse TokenResponse
 	json.Unmarshal(body, &tokenResponse)
+
+	fmt.Println("Access Token: ", tokenResponse.AccessToken)
 
 	return tokenResponse.AccessToken
 }

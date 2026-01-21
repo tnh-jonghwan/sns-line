@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	"messaging-line/jwt"
+	"sns-line/jwt"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/fx"

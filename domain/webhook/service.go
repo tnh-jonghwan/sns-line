@@ -33,11 +33,11 @@ func (s *WebhookService) HandleEvents(events []Event) error {
 // handleMessageEvent - 메시지 이벤트 처리
 func (s *WebhookService) handleMessageEvent(event Event) {
 	if event.Message != nil && event.Message.Type == "text" {
-		log.Printf("Received message: %s", event.Message.Text)
+		userMessage := event.Message.Text
+		log.Printf("Received message: %s", userMessage)
 
 		// 메시지 답장
-		replyText := "받은 메시지: " + event.Message.Text
-		if err := s.lineClient.ReplyMessage(event.ReplyToken, replyText); err != nil {
+		if err := s.lineClient.ReplyMessage(event.ReplyToken, "받은 메시지: "+userMessage); err != nil {
 			log.Printf("Failed to reply message: %v", err)
 		}
 	}
