@@ -16,6 +16,11 @@ import (
 	"github.com/lestrrat-go/jwx/v2/jwk"
 )
 
+/**
+아래는 Issue channel access token v2.1 방법임.
+현재는 Short-lived channel access token을 사용함.
+*/
+
 type TokenResponse struct {
 	AccessToken string `json:"access_token"`
 	TokenType   string `json:"token_type"`
@@ -90,7 +95,6 @@ func getJWT() string {
 	return signedToken
 }
 
-// Issue channel access token v2.1일 경우
 func GetAccessToken() string {
 	env := config.GetEnv()
 	jwtToken := getJWT()
