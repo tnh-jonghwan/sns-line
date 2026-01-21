@@ -8,7 +8,12 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func RegisterSSERoutes(app *fiber.App, broadcaster *Broadcaster) {
+// LineBroadcaster LINE 브로드캐스트 인터페이스
+type LineBroadcaster interface {
+	BroadcastMessage(text string) error
+}
+
+func RegisterSSERoutes(app *fiber.App, broadcaster *Broadcaster, lineClient LineBroadcaster) {
 	// SSE 엔드포인트
 	app.Get("/events", func(c *fiber.Ctx) error {
 		c.Set("Content-Type", "text/event-stream")
@@ -58,8 +63,16 @@ func RegisterSSERoutes(app *fiber.App, broadcaster *Broadcaster) {
 			})
 		}
 
-		// TODO: LINE Push API로 메시지 전송
 		log.Printf("메시지 전송 요청: %s", req.Text)
+
+		// LINE Broadcast API로 메시지 전송
+		if err := lineClient.BroadcastMessage(req.Text); err != nil {
+			log.Printf("Broadcast 실패: %v", err)
+			return c.Status(500).JSON(fiber.Map{
+				"success": false,
+				"error":   err.Error(),
+			})
+		}
 
 		return c.JSON(fiber.Map{
 			"success": true,

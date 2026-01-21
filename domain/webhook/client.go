@@ -82,3 +82,50 @@ func (c *LineClient) ReplyMessages(replyToken string, texts []string) error {
 	log.Println("Reply sent successfully")
 	return nil
 }
+
+// BroadcastMessage - LINE 브로드캐스트 API 호출 (모든 친구에게 메시지 전송)
+func (c *LineClient) BroadcastMessage(text string) error {
+	url := fmt.Sprintf("%s/v2/bot/message/broadcast", c.apiURL)
+
+	// 브로드캐스트 메시지 생성
+	broadcastData := map[string]interface{}{
+		"messages": []map[string]string{
+			{
+				"type": "text",
+				"text": text,
+			},
+		},
+	}
+
+	jsonData, err := json.Marshal(broadcastData)
+	if err != nil {
+		return fmt.Errorf("failed to marshal broadcast data: %w", err)
+	}
+
+	log.Printf("Sending broadcast to LINE API: %s", string(jsonData))
+
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
+	if err != nil {
+		return fmt.Errorf("failed to create request: %w", err)
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+c.accessToken)
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return fmt.Errorf("failed to send request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	body, _ := io.ReadAll(resp.Body)
+
+	if resp.StatusCode != 200 {
+		log.Printf("Broadcast API error (status %d): %s", resp.StatusCode, string(body))
+		return fmt.Errorf("broadcast failed with status %d: %s", resp.StatusCode, string(body))
+	}
+
+	log.Println("Broadcast sent successfully")
+	return nil
+}
