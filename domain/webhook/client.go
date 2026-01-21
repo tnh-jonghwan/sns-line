@@ -10,16 +10,14 @@ import (
 	"sns-line/config"
 )
 
-// LineClient - LINE API와 통신하는 클라이언트
 type LineClient struct {
 	accessToken string
 	apiURL      string
 }
 
-// NewLineClient - LineClient 생성자
-func NewLineClient(accessToken string, env *config.Env) *LineClient {
+func NewLineClient(env *config.Env) *LineClient {
 	return &LineClient{
-		accessToken: accessToken,
+		accessToken: env.AccessToken,
 		apiURL:      env.LineApiPrefix,
 	}
 }

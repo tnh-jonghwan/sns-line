@@ -12,6 +12,7 @@ type Env struct {
 	Kid           string
 	ChannelId     string
 	LineApiPrefix string
+	AccessToken   string
 }
 
 var (
@@ -28,15 +29,17 @@ func GetEnv() *Env {
 		kid := os.Getenv("KID")
 		channelId := os.Getenv("CHANNEL_ID")
 		lineApiPrefix := os.Getenv("LINE_API_PREFIX")
+		accessToken := os.Getenv("ACCESS_TOKEN")
 
-		if kid == "" || channelId == "" || lineApiPrefix == "" {
-			log.Fatal("Environment variables KID, CHANNEL_ID, and LINE_API_PREFIX must be set")
+		if kid == "" || channelId == "" || lineApiPrefix == "" || accessToken == "" {
+			log.Fatal("Environment variables KID, CHANNEL_ID, LINE_API_PREFIX, and ACCESS_TOKEN must be set")
 		}
 
 		instance = &Env{
 			Kid:           kid,
 			ChannelId:     channelId,
 			LineApiPrefix: lineApiPrefix,
+			AccessToken:   accessToken,
 		}
 	})
 

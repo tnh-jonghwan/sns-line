@@ -8,6 +8,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"net/url"
 	"sns-line/config"
 	"time"
 
@@ -89,21 +90,25 @@ func getJWT() string {
 	return signedToken
 }
 
+// Issue channel access token v2.1일 경우
 func GetAccessToken() string {
 	env := config.GetEnv()
 	jwtToken := getJWT()
 
 	// POST https://api.line.me/oauth2/v2.1/token 호출해서 accessToken 발급
-	url := fmt.Sprintf("%s/oauth2/v2.1/token", env.LineApiPrefix)
+	requestURL := fmt.Sprintf("%s/oauth2/v2.1/token", env.LineApiPrefix)
+	log.Printf("Request URL: %s", requestURL)
+	log.Printf("JWT token: %s", jwtToken)
 
-	// URL-encoded form data 생성
-	data := fmt.Sprintf(
-		"grant_type=client_credentials&client_assertion_type=%s&client_assertion=%s",
-		"urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
-		jwtToken,
-	)
+	// URL-encoded form data 생성 (url.Values로 자동 인코딩)
+	values := url.Values{}
+	values.Set("client_assertion", jwtToken)
+	values.Set("client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer")
+	values.Set("grant_type", "client_credentials")
 
-	req, _ := http.NewRequest("POST", url, bytes.NewBufferString(data))
+	data := values.Encode()
+
+	req, _ := http.NewRequest("POST", requestURL, bytes.NewBufferString(data))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	client := &http.Client{}

@@ -4,8 +4,6 @@ import (
 	"context"
 	"log"
 
-	"sns-line/jwt"
-
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/fx"
 )
@@ -45,12 +43,5 @@ func buildGlobalRoutes(app *fiber.App) {
 		return c.SendString("Hello, SNS-LINE SERVER!")
 	})
 
-	// refresh
-	app.Get("/refresh-token", func(c *fiber.Ctx) error {
-		newToken := jwt.GetAccessToken()
-		return c.JSON(fiber.Map{
-			"message":      "Token refreshed",
-			"access_token": newToken,
-		})
-	})
+	// health check나 다른 전역 라우트를 여기에 추가
 }
