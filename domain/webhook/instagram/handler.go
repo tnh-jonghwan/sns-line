@@ -141,7 +141,7 @@ func (h *InstagramHandler) HandleWebhook(c *fiber.Ctx) error {
 		return c.SendStatus(fiber.StatusBadRequest)
 	}
 
-	log.Printf("Instagram webhook received: %+v", req)
+	// log.Printf("Instagram webhook received: %+v", req)
 
 	// Instagram (또는 page) 이벤트인지 확인
 	if req.Object != "instagram" && req.Object != "page" {
