@@ -176,8 +176,8 @@ func (h *InstagramHandler) HandleWebhook(c *fiber.Ctx) error {
 				h.eventHub.Broadcast(change.Value.Text, change.Value.From.ID)
 			case "comments":
 				log.Printf("💬 Comment from %s: %s", change.Value.From.Username, change.Value.Text)
-				// 댓글 이벤트 처리 (필요시 구현)
-				// h.eventHub.Broadcast(...)
+				// 댓글 이벤트도 EventHub로 브로드캐스트
+				h.eventHub.Broadcast(change.Value.Text, change.Value.From.ID)
 			case "mentions":
 				log.Printf("@️⃣ Mention event")
 				// 멘션 이벤트 처리
