@@ -6,8 +6,9 @@ import (
 	"sns-line/app"
 	"sns-line/config"
 	"sns-line/domain/eventHub"
-	"sns-line/domain/line"
-	"sns-line/domain/webhook"
+	lineClient "sns-line/domain/line"
+	instagramWebhook "sns-line/domain/webhook/instagram"
+	lineWebhook "sns-line/domain/webhook/line"
 
 	"go.uber.org/fx"
 )
@@ -22,8 +23,9 @@ func main() {
 			config.GetEnv,
 		),
 
-		line.LineModule,
+		lineClient.LineModule,
 		eventHub.EventHubModule,
-		webhook.WebhookModule,
+		lineWebhook.LineWebhookModule,
+		instagramWebhook.InstagramModule,
 	).Run()
 }

@@ -9,10 +9,11 @@ import (
 )
 
 type Env struct {
-	Kid           string
-	ChannelId     string
-	LineApiPrefix string
-	AccessToken   string
+	Kid                  string
+	ChannelId            string
+	LineApiPrefix        string
+	LineAccessToken      string
+	InstagramVerifyToken string
 }
 
 var (
@@ -29,17 +30,23 @@ func GetEnv() *Env {
 		kid := os.Getenv("KID")
 		channelId := os.Getenv("CHANNEL_ID")
 		lineApiPrefix := os.Getenv("LINE_API_PREFIX")
-		accessToken := os.Getenv("ACCESS_TOKEN")
+		lineAccessToken := os.Getenv("LINE_ACCESS_TOKEN")
+		instagramVerifyToken := os.Getenv("INSTAGRAM_VERIFY_TOKEN")
 
-		if kid == "" || channelId == "" || lineApiPrefix == "" || accessToken == "" {
-			log.Fatal("Environment variables KID, CHANNEL_ID, LINE_API_PREFIX, and ACCESS_TOKEN must be set")
+		if kid == "" || channelId == "" || lineApiPrefix == "" || lineAccessToken == "" {
+			log.Fatal("Environment variables KID, CHANNEL_ID, LINE_API_PREFIX, and LINE_ACCESS_TOKEN must be set")
+		}
+
+		if instagramVerifyToken == "" {
+			log.Println("Warning: INSTAGRAM_VERIFY_TOKEN not set")
 		}
 
 		instance = &Env{
-			Kid:           kid,
-			ChannelId:     channelId,
-			LineApiPrefix: lineApiPrefix,
-			AccessToken:   accessToken,
+			Kid:                  kid,
+			ChannelId:            channelId,
+			LineApiPrefix:        lineApiPrefix,
+			LineAccessToken:      lineAccessToken,
+			InstagramVerifyToken: instagramVerifyToken,
 		}
 	})
 

@@ -1,10 +1,10 @@
-package webhook
+package line
 
 import (
 	"go.uber.org/fx"
 )
 
-var WebhookModule = fx.Options(
+var LineWebhookModule = fx.Options(
 	fx.Provide(
 		NewWebhookService,
 		NewWebhookHandler,

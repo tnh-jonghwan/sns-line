@@ -11,14 +11,14 @@ import (
 )
 
 type LineClient struct {
-	accessToken string
-	apiURL      string
+	LineAccessToken string
+	LineApiURL      string
 }
 
 func NewLineClient(env *config.Env) *LineClient {
 	return &LineClient{
-		accessToken: env.AccessToken,
-		apiURL:      env.LineApiPrefix,
+		LineAccessToken: env.LineAccessToken,
+		LineApiURL:      env.LineApiPrefix,
 	}
 }
 
@@ -29,7 +29,7 @@ func (c *LineClient) ReplyMessage(replyToken, text string) error {
 
 // ReplyMessages - LINE 메시지 답장 API 호출 (복수 메시지, 최대 5개)
 func (c *LineClient) ReplyMessages(replyToken string, texts []string) error {
-	url := fmt.Sprintf("%s/v2/bot/message/reply", c.apiURL)
+	url := fmt.Sprintf("%s/v2/bot/message/reply", c.LineApiURL)
 
 	// 최대 5개 메시지만 허용
 	if len(texts) > 5 {
@@ -63,7 +63,7 @@ func (c *LineClient) ReplyMessages(replyToken string, texts []string) error {
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+c.accessToken)
+	req.Header.Set("Authorization", "Bearer "+c.LineAccessToken)
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -85,7 +85,7 @@ func (c *LineClient) ReplyMessages(replyToken string, texts []string) error {
 
 // BroadcastMessage - LINE 브로드캐스트 API 호출 (모든 친구에게 메시지 전송)
 func (c *LineClient) BroadcastMessage(text string) error {
-	url := fmt.Sprintf("%s/v2/bot/message/broadcast", c.apiURL)
+	url := fmt.Sprintf("%s/v2/bot/message/broadcast", c.LineApiURL)
 
 	// 브로드캐스트 메시지 생성
 	broadcastData := map[string]interface{}{
@@ -110,7 +110,7 @@ func (c *LineClient) BroadcastMessage(text string) error {
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+c.accessToken)
+	req.Header.Set("Authorization", "Bearer "+c.LineAccessToken)
 
 	client := &http.Client{}
 	resp, err := client.Do(req)

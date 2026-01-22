@@ -1,4 +1,4 @@
-package webhook
+package line
 
 import (
 	"github.com/gofiber/fiber/v2"
