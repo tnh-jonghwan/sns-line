@@ -151,6 +151,7 @@ func (h *InstagramHandler) HandleWebhook(c *fiber.Ctx) error {
 
 	// 각 엔트리 처리 (배치로 여러 개 올 수 있음)
 	for _, entry := range req.Entry {
+		// Messaging 처리 (DM)
 		for _, messaging := range entry.Messaging {
 			// 불필요한 이벤트 필터링
 			if h.shouldSkipEvent(&messaging) {
@@ -162,6 +163,26 @@ func (h *InstagramHandler) HandleWebhook(c *fiber.Ctx) error {
 
 			// Postback 처리
 			h.handlePostback(&messaging)
+		}
+
+		// Changes 처리 (댓글, 좋아요 등)
+		for _, change := range entry.Changes {
+			log.Printf("📨 Instagram change event: field=%s", change.Field)
+
+			switch change.Field {
+			case "comments":
+				log.Printf("💬 Comment from %s: %s", change.Value.From.Username, change.Value.Text)
+				// 댓글 이벤트 처리 (필요시 구현)
+				// h.eventHub.Broadcast(...)
+			case "mentions":
+				log.Printf("@️⃣ Mention event")
+				// 멘션 이벤트 처리
+			case "feed":
+				log.Printf("📰 Feed event")
+				// 피드 이벤트 처리
+			default:
+				log.Printf("🔔 Other change event: %s", change.Field)
+			}
 		}
 	}
 

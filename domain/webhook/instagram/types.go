@@ -10,7 +10,8 @@ type WebhookRequest struct {
 type Entry struct {
 	ID        string      `json:"id"`
 	Time      int64       `json:"time"`
-	Messaging []Messaging `json:"messaging"`
+	Messaging []Messaging `json:"messaging,omitempty"` // DM 메시지용
+	Changes   []Change    `json:"changes,omitempty"`   // 댓글, 좋아요 등
 }
 
 // Messaging - 메시지 정보
@@ -54,4 +55,25 @@ type Read struct {
 type Delivery struct {
 	Mids      []string `json:"mids"`
 	Watermark int64    `json:"watermark"`
+}
+
+// Change - Instagram changes 이벤트 (댓글, 좋아요 등)
+type Change struct {
+	Field string      `json:"field"` // "comments", "feed", "mentions" 등
+	Value ChangeValue `json:"value"`
+}
+
+// ChangeValue - Change 안의 실제 데이터
+type ChangeValue struct {
+	From struct {
+		ID       string `json:"id"`
+		Username string `json:"username"`
+	} `json:"from,omitempty"`
+	Media struct {
+		ID               string `json:"id"`
+		MediaProductType string `json:"media_product_type"`
+	} `json:"media,omitempty"`
+	ID       string `json:"id"`
+	ParentID string `json:"parent_id,omitempty"`
+	Text     string `json:"text,omitempty"`
 }
