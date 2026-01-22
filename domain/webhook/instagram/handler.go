@@ -132,7 +132,6 @@ func (h *InstagramHandler) HandleWebhook(c *fiber.Ctx) error {
 
 	// RAW Body 로그 출력 (디버깅용)
 	bodyBytes := c.Body()
-	log.Printf("📦 RAW Body: %s", string(bodyBytes))
 
 	// 요청 파싱
 	var req WebhookRequest
