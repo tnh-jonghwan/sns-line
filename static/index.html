@@ -3,21 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LINE 메시징</title>
+    <title>SNS Messaging Hub</title>
     <link rel="stylesheet" href="/style.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>📱 LINE 메시징</h1>
+            <h1>💬 SNS Messaging Hub</h1>
             <div class="status">
                 <span class="status-dot" id="statusDot"></span>
                 <span id="statusText">연결 중...</span>
             </div>
         </header>
 
-        <div class="messages" id="messages">
-            <!-- 메시지가 여기에 추가됨 -->
+        <!-- 플랫폼 탭 -->
+        <div class="tabs">
+            <button class="tab active" data-platform="line">
+                📱 LINE
+            </button>
+            <button class="tab" data-platform="instagram">
+                📸 Instagram
+            </button>
+        </div>
+
+        <!-- LINE 메시지 컨테이너 -->
+        <div class="messages-container active" data-platform="line">
+            <div class="messages" id="messagesLine">
+                <!-- LINE 메시지가 여기에 추가됨 -->
+            </div>
+        </div>
+
+        <!-- Instagram 메시지 컨테이너 -->
+        <div class="messages-container" data-platform="instagram">
+            <div class="messages" id="messagesInstagram">
+                <!-- Instagram 메시지가 여기에 추가됨 -->
+            </div>
         </div>
 
         <div class="input-area">

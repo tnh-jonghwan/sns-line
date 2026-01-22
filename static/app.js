@@ -1,10 +1,46 @@
+// 현재 활성 플랫폼
+let currentPlatform = 'line';
+
 // eventHub 연결
 let eventSource = null;
-const messages = document.getElementById('messages');
+const messagesLine = document.getElementById('messagesLine');
+const messagesInstagram = document.getElementById('messagesInstagram');
 const messageInput = document.getElementById('messageInput');
 const sendButton = document.getElementById('sendButton');
 const statusDot = document.getElementById('statusDot');
 const statusText = document.getElementById('statusText');
+const tabs = document.querySelectorAll('.tab');
+const messageContainers = document.querySelectorAll('.messages-container');
+
+// 탭 전환
+tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+        const platform = tab.dataset.platform;
+        switchPlatform(platform);
+    });
+});
+
+function switchPlatform(platform) {
+    currentPlatform = platform;
+    
+    // 탭 활성화
+    tabs.forEach(tab => {
+        if (tab.dataset.platform === platform) {
+            tab.classList.add('active');
+        } else {
+            tab.classList.remove('active');
+        }
+    });
+    
+    // 메시지 컨테이너 전환
+    messageContainers.forEach(container => {
+        if (container.dataset.platform === platform) {
+            container.classList.add('active');
+        } else {
+            container.classList.remove('active');
+        }
+    });
+}
 
 // eventHub 연결
 function connect() {
@@ -19,7 +55,10 @@ function connect() {
     
     eventSource.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        addMessage(data.text, data.userId, 'received');
+        // userId로 플랫폼 구분 (간단한 방법: Instagram ID는 보통 더 길음)
+        // 더 정확한 방법은 서버에서 platform 정보를 함께 보내는 것
+        const platform = detectPlatform(data.userId);
+        addMessage(data.text, data.userId, 'received', platform);
     };
     
     eventSource.onerror = (error) => {
@@ -39,14 +78,35 @@ function connect() {
     });
 }
 
+// 플랫폼 감지 (임시 - 서버에서 보내주면 더 정확함)
+function detectPlatform(userId) {
+    // Instagram IGSID는 보통 매우 긴 숫자
+    // LINE userId는 보통 U로 시작하거나 다른 형식
+    if (userId && userId.length > 15 && /^\d+$/.test(userId)) {
+        return 'instagram';
+    }
+    return 'line';
+}
+
 // 메시지 추가
-function addMessage(text, userId, type = 'received') {
+function addMessage(text, userId, type = 'received', platform = 'line') {
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${type}`;
     
     const bubble = document.createElement('div');
     bubble.className = 'message-bubble';
-    bubble.textContent = text;
+    
+    // 수신 메시지에 sender ID 표시
+    if (type === 'received' && userId) {
+        const senderInfo = document.createElement('div');
+        senderInfo.className = 'sender-id';
+        senderInfo.textContent = userId;
+        bubble.appendChild(senderInfo);
+    }
+    
+    const textContent = document.createElement('div');
+    textContent.textContent = text;
+    bubble.appendChild(textContent);
     
     const time = document.createElement('div');
     time.className = 'message-time';
@@ -58,8 +118,10 @@ function addMessage(text, userId, type = 'received') {
     messageDiv.appendChild(bubble);
     messageDiv.appendChild(time);
     
-    messages.appendChild(messageDiv);
-    messages.scrollTop = messages.scrollHeight;
+    // 플랫폼에 맞는 컨테이너에 추가
+    const targetContainer = platform === 'instagram' ? messagesInstagram : messagesLine;
+    targetContainer.appendChild(messageDiv);
+    targetContainer.scrollTop = targetContainer.scrollHeight;
 }
 
 // 메시지 전송
@@ -78,7 +140,7 @@ function sendMessage() {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            addMessage(text, 'me', 'sent');
+            addMessage(text, 'me', 'sent', currentPlatform);
             messageInput.value = '';
         } else {
             alert('메시지 전송 실패: ' + data.error);

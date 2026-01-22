@@ -28,7 +28,7 @@ body {
 }
 
 header {
-    background: linear-gradient(135deg, #06C755 0%, #00B900 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     padding: 20px;
     display: flex;
@@ -60,9 +60,75 @@ header h1 {
     background: #44ff44;
 }
 
+/* 탭 네비게이션 */
+.tabs {
+    display: flex;
+    background: white;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.tab {
+    flex: 1;
+    padding: 16px;
+    background: none;
+    border: none;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    color: #999;
+    transition: all 0.3s;
+    position: relative;
+}
+
+.tab:hover {
+    color: #333;
+    background: #f5f5f5;
+}
+
+.tab.active {
+    color: #667eea;
+}
+
+.tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.tab[data-platform="line"].active {
+    color: #06C755;
+}
+
+.tab[data-platform="line"].active::after {
+    background: linear-gradient(135deg, #06C755 0%, #00B900 100%);
+}
+
+.tab[data-platform="instagram"].active {
+    color: #E1306C;
+}
+
+.tab[data-platform="instagram"].active::after {
+    background: linear-gradient(135deg, #E1306C 0%, #C13584 100%);
+}
+
 @keyframes pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.5; }
+}
+
+/* 메시지 컨테이너 */
+.messages-container {
+    flex: 1;
+    display: none;
+    flex-direction: column;
+}
+
+.messages-container.active {
+    display: flex;
 }
 
 .messages {
@@ -119,6 +185,19 @@ header h1 {
     border-bottom-right-radius: 4px;
 }
 
+/* Instagram 메시지 스타일 */
+.messages-container[data-platform="instagram"] .message.sent .message-bubble {
+    background: linear-gradient(135deg, #E1306C 0%, #C13584 100%);
+}
+
+/* Sender ID */
+.sender-id {
+    font-size: 11px;
+    color: #999;
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
 .message-time {
     font-size: 11px;
     color: #999;
@@ -150,7 +229,7 @@ header h1 {
 
 #sendButton {
     padding: 12px 24px;
-    background: linear-gradient(135deg, #06C755 0%, #00B900 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     border: none;
     border-radius: 24px;
@@ -162,7 +241,7 @@ header h1 {
 
 #sendButton:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(6, 199, 85, 0.3);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
 
 #sendButton:active {
