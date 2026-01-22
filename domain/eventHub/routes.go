@@ -18,14 +18,14 @@ func RegistereventHubRoutes(app *fiber.App, eventHub *EventHub, lineClient *line
 		c.Set("X-Accel-Buffering", "no")
 
 		// 새 클라이언트 채널 생성
-		client := make(chan Message, 10)
-		eventHub.Register(client)
+		client := make(chan string, 10)
+		eventHub.AddClient(client)
 
 		log.Println("eventHub 클라이언트 연결됨")
 
 		c.Context().SetBodyStreamWriter(func(w *bufio.Writer) {
 			defer func() {
-				eventHub.Unregister(client)
+				eventHub.RemoveClient(client)
 				log.Println("eventHub 클라이언트 연결 해제됨")
 			}()
 
@@ -35,7 +35,7 @@ func RegistereventHubRoutes(app *fiber.App, eventHub *EventHub, lineClient *line
 
 			// 메시지 수신 루프
 			for message := range client {
-				fmt.Fprintf(w, "data: %s\n\n", message.ToJSON())
+				fmt.Fprintf(w, "data: %s\n\n", message)
 				if err := w.Flush(); err != nil {
 					log.Printf("eventHub flush error: %v", err)
 					return

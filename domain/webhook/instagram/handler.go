@@ -105,7 +105,7 @@ func (h *InstagramHandler) handleMessage(messaging *Messaging) {
 	log.Printf("📩 Instagram message from %s: %s", senderID, messageText)
 
 	// SSE로 브로드캐스트
-	h.eventHub.Broadcast(messageText, senderID)
+	h.eventHub.Broadcast(messageText, senderID, "instagram")
 }
 
 // handlePostback - Postback 이벤트 처리
@@ -120,7 +120,7 @@ func (h *InstagramHandler) handlePostback(messaging *Messaging) {
 	log.Printf("🔘 Instagram postback from %s: %s", senderID, payload)
 
 	// Postback도 브로드캐스트
-	h.eventHub.Broadcast(payload, senderID)
+	h.eventHub.Broadcast(payload, senderID, "instagram")
 }
 
 // HandleWebhook - POST 웹훅 수신 핸들러
@@ -173,11 +173,11 @@ func (h *InstagramHandler) HandleWebhook(c *fiber.Ctx) error {
 				// DM 메시지 (changes로 올 수도 있음)
 				log.Printf("💬 Instagram DM from %s: %s", change.Value.From.ID, change.Value.Text)
 				// EventHub로 브로드캐스트
-				h.eventHub.Broadcast(change.Value.Text, change.Value.From.ID)
+				h.eventHub.Broadcast(change.Value.Text, change.Value.From.ID, "instagram")
 			case "comments":
 				log.Printf("💬 Comment from %s: %s", change.Value.From.Username, change.Value.Text)
 				// 댓글 이벤트도 EventHub로 브로드캐스트
-				h.eventHub.Broadcast(change.Value.Text, change.Value.From.ID)
+				h.eventHub.Broadcast(change.Value.Text, change.Value.From.ID, "instagram")
 			case "mentions":
 				log.Printf("@️⃣ Mention event")
 				// 멘션 이벤트 처리

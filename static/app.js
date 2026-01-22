@@ -55,9 +55,8 @@ function connect() {
     
     eventSource.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        // userId로 플랫폼 구분 (간단한 방법: Instagram ID는 보통 더 길음)
-        // 더 정확한 방법은 서버에서 platform 정보를 함께 보내는 것
-        const platform = detectPlatform(data.userId);
+        // 서버에서 platform 정보를 직접 받음
+        const platform = data.platform || 'line';  // 기본값은 line
         addMessage(data.text, data.userId, 'received', platform);
     };
     
@@ -76,16 +75,6 @@ function connect() {
     eventSource.addEventListener('connected', (event) => {
         console.log('서버 연결 확인:', event.data);
     });
-}
-
-// 플랫폼 감지 (임시 - 서버에서 보내주면 더 정확함)
-function detectPlatform(userId) {
-    // Instagram IGSID는 보통 매우 긴 숫자
-    // LINE userId는 보통 U로 시작하거나 다른 형식
-    if (userId && userId.length > 15 && /^\d+$/.test(userId)) {
-        return 'instagram';
-    }
-    return 'line';
 }
 
 // 메시지 추가

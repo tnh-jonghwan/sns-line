@@ -37,7 +37,7 @@ func (s *WebhookService) handleMessageEvent(event Event, eventHub *eventHub.Even
 		log.Printf("Received message: %s", userMessage)
 
 		// eventHub로 브로드캐스트
-		eventHub.Broadcast(userMessage, event.Source.UserID)
+		eventHub.Broadcast(userMessage, event.Source.UserID, "line")
 
 		// 메시지 답장
 		if err := s.lineClient.ReplyMessage(event.ReplyToken, "받은 메시지: "+userMessage); err != nil {
