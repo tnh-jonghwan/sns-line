@@ -6,8 +6,8 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"log"
-	"sns-line/config"
-	"sns-line/domain/eventHub"
+	"sns/config"
+	"sns/domain/eventHub"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"

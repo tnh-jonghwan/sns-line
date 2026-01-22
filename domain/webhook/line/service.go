@@ -2,8 +2,8 @@ package line
 
 import (
 	"log"
-	"sns-line/domain/eventHub"
-	"sns-line/domain/line"
+	"sns/domain/eventHub"
+	"sns/domain/line"
 )
 
 type WebhookService struct {

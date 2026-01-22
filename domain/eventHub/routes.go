@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"log"
-	"sns-line/domain/line"
+	"sns/domain/line"
 
 	"github.com/gofiber/fiber/v2"
 )

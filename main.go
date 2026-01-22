@@ -3,12 +3,12 @@ package main
 import (
 	"log"
 	"os"
-	"sns-line/app"
-	"sns-line/config"
-	"sns-line/domain/eventHub"
-	lineClient "sns-line/domain/line"
-	instagramWebhook "sns-line/domain/webhook/instagram"
-	lineWebhook "sns-line/domain/webhook/line"
+	"sns/app"
+	"sns/config"
+	"sns/domain/eventHub"
+	lineClient "sns/domain/line"
+	instagramWebhook "sns/domain/webhook/instagram"
+	lineWebhook "sns/domain/webhook/line"
 
 	"go.uber.org/fx"
 )

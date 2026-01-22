@@ -7,7 +7,7 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"sns-line/config"
+	"sns/config"
 )
 
 type LineClient struct {

@@ -9,7 +9,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
-	"sns-line/config"
+	"sns/config"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"

@@ -2,7 +2,7 @@ package line
 
 import (
 	"log"
-	"sns-line/domain/eventHub"
+	"sns/domain/eventHub"
 
 	"github.com/gofiber/fiber/v2"
 )
