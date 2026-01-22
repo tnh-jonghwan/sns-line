@@ -169,6 +169,11 @@ func (h *InstagramHandler) HandleWebhook(c *fiber.Ctx) error {
 			log.Printf("📨 Instagram change event: field=%s", change.Field)
 
 			switch change.Field {
+			case "messages":
+				// DM 메시지 (changes로 올 수도 있음)
+				log.Printf("💬 Instagram DM from %s: %s", change.Value.From.ID, change.Value.Text)
+				// EventHub로 브로드캐스트
+				h.eventHub.Broadcast(change.Value.Text, change.Value.From.ID)
 			case "comments":
 				log.Printf("💬 Comment from %s: %s", change.Value.From.Username, change.Value.Text)
 				// 댓글 이벤트 처리 (필요시 구현)
